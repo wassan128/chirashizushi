@@ -29,7 +29,9 @@ func main() {
         log.Fatal(err)
     }
 
-    // Setup HTTP Server for receiving requests from LINE platform
+    http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
+        fmt.Fprintf(w, "Welcome to ようこそ ChirashiZushi world")
+    })
     http.HandleFunc("/callback", func(w http.ResponseWriter, req *http.Request) {
         events, err := bot.ParseRequest(req)
         if err != nil {
