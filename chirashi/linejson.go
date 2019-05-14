@@ -2,13 +2,20 @@ package chirashi
 
 import (
     "fmt"
+    "sort"
 
     "github.com/line/line-bot-sdk-go/linebot"
 )
 
 func GenerateMessage(shop Shop, items []Item) *linebot.CarouselContainer {
-    bubbles := []*linebot.BubbleContainer{}
+    sort.Slice(items, func(i, j int) bool {
+        return items[i].Price < items[j].Price
+    })
+    if len(items) > 10 {
+        items = items[:10]
+    }
 
+    bubbles := []*linebot.BubbleContainer{}
     for _, item := range items {
         bubble := &linebot.BubbleContainer{
             Type: linebot.FlexContainerTypeBubble,
