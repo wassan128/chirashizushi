@@ -38,7 +38,7 @@ func Open(id string) Shop {
 }
 
 func (shop Shop) GetTokubaiInfo() []Item {
-    items := shop.Chirashi.Find("a[id^=office_featured_product]")
+    items := shop.Chirashi.Find("a[id*=featured_product]")
 
     var tokubaiItems []Item
     items.Each(func(_ int, item *goquery.Selection) {
