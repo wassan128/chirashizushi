@@ -1,52 +1,63 @@
 package chirashi
 
 import (
-    "encoding/json"
     "fmt"
+
+    "github.com/line/line-bot-sdk-go/linebot"
 )
 
-type Container struct {
-    Type string                 `json:"type"`
-    Contents []ContainerContent `json:"contents"`
-}
-type ContainerContent struct {
-    Type string `json:"type"`
-    Body Body   `json:"body"`
-}
-type Body struct {
-    Type string             `json:"type"`
-    Layout string           `json:"layout"`
-    Contents []BodyContent  `json:"contents"`
-}
-type BodyContent struct {
-    Type string `json:"type"`
-    Text string `json:"text"`
-}
+func GenerateMessage(shop Shop, items []Item) *linebot.CarouselContainer {
+    bubbles := []*linebot.BubbleContainer{}
 
-func GenerateMessage(items []Item) string {
-    var container Container
-    container.Type = "carousel"
-
-    var contents []ContainerContent
     for _, item := range items {
-        var content ContainerContent
-
-        content.Type = "bubble"
-        content.Body = Body{
-            Type: "box",
-            Layout: "vertical",
-            Contents: []BodyContent{
-                BodyContent{
-                    Type: "text",
-                    Text: fmt.Sprintf("%s(￥%d)", item.Name, item.Price),
+        bubble := &linebot.BubbleContainer{
+            Type: linebot.FlexContainerTypeBubble,
+            Hero: &linebot.ImageComponent{
+                Type: linebot.FlexComponentTypeImage,
+                URL: item.ImageUrl,
+                Size: linebot.FlexImageSizeTypeFull,
+                AspectRatio: linebot.FlexImageAspectRatioType1to1,
+                AspectMode: linebot.FlexImageAspectModeTypeCover,
+            },
+            Body: &linebot.BoxComponent{
+                Type: linebot.FlexComponentTypeBox,
+                Layout: linebot.FlexBoxLayoutTypeVertical,
+                Contents: []linebot.FlexComponent{
+                    &linebot.TextComponent{
+                        Type: linebot.FlexComponentTypeText,
+                        Size: linebot.FlexTextSizeTypeXs,
+                        Color: "#666666",
+                        Text: shop.Name,
+                    },
+                    &linebot.TextComponent{
+                        Type: linebot.FlexComponentTypeText,
+                        Size: linebot.FlexTextSizeTypeXl,
+                        Weight: "bold",
+                        Text: item.Name,
+                    },
+                    &linebot.TextComponent{
+                        Type: linebot.FlexComponentTypeText,
+                        Color: "#888888",
+                        Text: item.Description,
+                    },
+                    &linebot.TextComponent{
+                        Type: linebot.FlexComponentTypeText,
+                        Size: linebot.FlexTextSizeType3xl,
+                        Align: linebot.FlexComponentAlignTypeEnd,
+                        Weight: "bold",
+                        Color: "#ff0000",
+                        Text: fmt.Sprintf("￥%d", item.Price),
+                    },
                 },
             },
         }
-        contents = append(contents, content)
+        bubbles = append(bubbles, bubble)
     }
-    container.Contents = contents
+    contents := &linebot.CarouselContainer{
+        Type: linebot.FlexContainerTypeCarousel,
+        Contents: bubbles,
+    }
 
-    jsonBytes, _ := json.Marshal(&container)
-    return string(jsonBytes)
+    return contents
 }
 
