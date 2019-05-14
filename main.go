@@ -7,18 +7,16 @@ import (
     "os"
 
     "github.com/line/line-bot-sdk-go/linebot"
+    "github.com/wassan128/chirashizushi/chirashi"
 )
 
+func getMessage(shopId string) *linebot.CarouselContainer {
+    shop := chirashi.Open(shopId)
+    items := shop.GetTokubaiInfo()
+    return chirashi.GenerateMessage(shop, items)
+}
+
 func main() {
-    //shop := chirashi.Open("7192")
-    //fmt.Printf("Shop: [%+v]\n", shop)
-
-    //items := shop.GetTokubaiInfo()
-    //fmt.Printf("Items: [%+v]\n", items)
-
-    //json := chirashi.GenerateMessage(items)
-    //fmt.Printf("%+v\n", json)
-
     bot, err := linebot.New(
         os.Getenv("CHANNEL_SECRET"),
         os.Getenv("CHANNEL_ACCESS_TOKEN"),
@@ -46,7 +44,11 @@ func main() {
                 fmt.Printf("%+v\n", event.Message)
                 switch message := event.Message.(type) {
                 case *linebot.TextMessage:
-                    if _, err = bot.ReplyMessage(event.ReplyToken, linebot.NewTextMessage(message.Text)).Do(); err != nil {
+                    container := getMessage(message.Text)
+                    if _, err = bot.ReplyMessage(
+                        event.ReplyToken,
+                        linebot.NewFlexMessage("Chirashi submitted.", container),
+                    ).Do(); err != nil {
                         log.Print(err)
                     }
                 }
