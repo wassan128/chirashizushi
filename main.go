@@ -6,7 +6,6 @@ import (
     "net/http"
     "os"
 
-    _ "./chirashi"
     "github.com/line/line-bot-sdk-go/linebot"
 )
 
