@@ -7,7 +7,7 @@ import (
     "github.com/line/line-bot-sdk-go/linebot"
 )
 
-func GenerateMessage(shop Shop, items []Item) *linebot.CarouselContainer {
+func GenerateMessage(items []Item) *linebot.CarouselContainer {
     sort.Slice(items, func(i, j int) bool {
         return items[i].Price < items[j].Price
     })
@@ -30,12 +30,6 @@ func GenerateMessage(shop Shop, items []Item) *linebot.CarouselContainer {
                 Type: linebot.FlexComponentTypeBox,
                 Layout: linebot.FlexBoxLayoutTypeVertical,
                 Contents: []linebot.FlexComponent{
-                    &linebot.TextComponent{
-                        Type: linebot.FlexComponentTypeText,
-                        Size: linebot.FlexTextSizeTypeXs,
-                        Color: "#666666",
-                        Text: shop.Name,
-                    },
                     &linebot.TextComponent{
                         Type: linebot.FlexComponentTypeText,
                         Size: linebot.FlexTextSizeTypeXl,

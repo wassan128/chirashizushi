@@ -46,7 +46,6 @@ func main() {
                     }
 
                     shop := chirashi.Open(message.Text)
-                    fmt.Printf("%+v\n", shop)
                     items := shop.GetTokubaiInfo()
                     fmt.Printf("%+v\n", items)
 
@@ -55,14 +54,13 @@ func main() {
                             event.ReplyToken,
                             linebot.NewTextMessage("チラシが見つかりませんでした"),
                         ).Do()
-                        fmt.Printf("no chirashi")
                     } else {
-                        container := chirashi.GenerateMessage(shop, items)
+                        container := chirashi.GenerateMessage(items)
                         bot.ReplyMessage(
                             event.ReplyToken,
+                            linebot.NewTextMessage(shop.Name + "のチラシ情報です"),
                             linebot.NewFlexMessage("チラシ情報です", container),
                         ).Do()
-                        fmt.Printf("%+v\n", container)
                     }
                 }
             }
