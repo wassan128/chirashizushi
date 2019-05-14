@@ -1,7 +1,6 @@
 package main
 
 import (
-    "fmt"
     "log"
     "net/http"
     "os"
@@ -21,9 +20,6 @@ func main() {
         log.Fatal(err)
     }
 
-    http.HandleFunc("/", func(w http.ResponseWriter, req *http.Request) {
-        fmt.Fprintf(w, "Welcome to ようこそ ChirashiZushi world")
-    })
     http.HandleFunc("/callback", func(w http.ResponseWriter, req *http.Request) {
         events, err := bot.ParseRequest(req)
         if err != nil {
@@ -47,7 +43,6 @@ func main() {
 
                     shop := chirashi.Open(message.Text)
                     items := shop.GetTokubaiInfo()
-                    fmt.Printf("%+v\n", items)
 
                     if len(items) == 0 {
                         bot.ReplyMessage(
