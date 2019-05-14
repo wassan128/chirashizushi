@@ -5,16 +5,11 @@ import (
     "log"
     "net/http"
     "os"
+    "strconv"
 
     "github.com/line/line-bot-sdk-go/linebot"
     "github.com/wassan128/chirashizushi/chirashi"
 )
-
-func getMessage(shopId string) *linebot.CarouselContainer {
-    shop := chirashi.Open(shopId)
-    items := shop.GetTokubaiInfo()
-    return chirashi.GenerateMessage(shop, items)
-}
 
 func main() {
     bot, err := linebot.New(
@@ -41,15 +36,33 @@ func main() {
         }
         for _, event := range events {
             if event.Type == linebot.EventTypeMessage {
-                fmt.Printf("%+v\n", event.Message)
                 switch message := event.Message.(type) {
                 case *linebot.TextMessage:
-                    container := getMessage(message.Text)
-                    if _, err = bot.ReplyMessage(
-                        event.ReplyToken,
-                        linebot.NewFlexMessage("Chirashi submitted.", container),
-                    ).Do(); err != nil {
-                        log.Print(err)
+                    if _, err := strconv.Atoi(message.Text); err != nil {
+                        bot.ReplyMessage(
+                            event.ReplyToken,
+                            linebot.NewTextMessage("お店IDは数字で送信してください"),
+                        ).Do()
+                    }
+
+                    shop := chirashi.Open(message.Text)
+                    fmt.Printf("%+v\n", shop)
+                    items := shop.GetTokubaiInfo()
+                    fmt.Printf("%+v\n", items)
+
+                    if len(items) == 0 {
+                        bot.ReplyMessage(
+                            event.ReplyToken,
+                            linebot.NewTextMessage("チラシが見つかりませんでした"),
+                        ).Do()
+                        fmt.Printf("no chirashi")
+                    } else {
+                        container := chirashi.GenerateMessage(shop, items)
+                        bot.ReplyMessage(
+                            event.ReplyToken,
+                            linebot.NewFlexMessage("チラシ情報です", container),
+                        ).Do()
+                        fmt.Printf("%+v\n", container)
                     }
                 }
             }
