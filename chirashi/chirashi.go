@@ -16,6 +16,7 @@ type Shop struct {
 type Item struct {
     ImageUrl string
     Name string
+    Description string
     Price int
 }
 var shopId string
@@ -50,6 +51,10 @@ func (shop Shop) GetTokubaiInfo() []Item {
         // Name
         name := Strip(item.Find(".name").Text())
         tokubaiItem.Name = name
+
+        // Description
+        desc := Strip(item.Find(".price_unit_and_production_area").Text())
+        tokubaiItem.Description = desc
 
         // Price
         price := item.Find(".number").Text()
