@@ -42,21 +42,29 @@ func main() {
                     }
 
                     shop := chirashi.Open(message.Text)
-                    items := shop.GetTokubaiInfo()
+                    if len(shop.Name) == 0 {
+                        bot.ReplyMessage(
+                            event.ReplyToken,
+                            linebot.NewTextMessage("そのようなIDの店舗は見つかりませんでした"),
+                        ).Do()
+                        continue
+                    }
 
+                    items := shop.GetTokubaiInfo()
                     if len(items) == 0 {
                         bot.ReplyMessage(
                             event.ReplyToken,
                             linebot.NewTextMessage(shop.Name + "のチラシは見つかりませんでした"),
                         ).Do()
-                    } else {
-                        container := chirashi.GenerateMessage(items)
-                        bot.ReplyMessage(
-                            event.ReplyToken,
-                            linebot.NewTextMessage(shop.Name + "のチラシ情報です"),
-                            linebot.NewFlexMessage("チラシ情報です", container),
-                        ).Do()
+                        continue
                     }
+
+                    container := chirashi.GenerateMessage(items)
+                    bot.ReplyMessage(
+                        event.ReplyToken,
+                        linebot.NewTextMessage(shop.Name + "のチラシ情報です"),
+                        linebot.NewFlexMessage("チラシ情報です", container),
+                    ).Do()
                 }
             }
         }
