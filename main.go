@@ -62,7 +62,7 @@ func main() {
                     container := chirashi.GenerateMessage(items)
                     bot.ReplyMessage(
                         event.ReplyToken,
-                        linebot.NewTextMessage(shop.Name + "のチラシ情報です"),
+                        linebot.NewTextMessage(shop.Name + "のチラシ情報です https://tokubai.co.jp/" + shop.Id),
                         linebot.NewFlexMessage("チラシ情報です", container),
                     ).Do()
                 }
