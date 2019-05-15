@@ -47,7 +47,7 @@ func main() {
                     if len(items) == 0 {
                         bot.ReplyMessage(
                             event.ReplyToken,
-                            linebot.NewTextMessage("チラシが見つかりませんでした"),
+                            linebot.NewTextMessage(shop.Name + "のチラシは見つかりませんでした"),
                         ).Do()
                     } else {
                         container := chirashi.GenerateMessage(items)
