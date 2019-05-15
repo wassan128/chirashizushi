@@ -47,6 +47,9 @@ func (shop Shop) GetTokubaiInfo() []Item {
         // Thumb
         img := item.Find(".image")
         src, _ := img.Attr("data-src")
+        if len(src) == 0 {
+            src = "https://raw.githubusercontent.com/wassan128/chirashizushi/master/noimage.jpg"
+        }
         tokubaiItem.ImageUrl = src
 
         // Name
