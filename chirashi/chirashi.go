@@ -54,6 +54,9 @@ func (shop Shop) GetTokubaiInfo() []Item {
 
         // Name
         name := util.Strip(item.Find(".name").Text())
+        if len(name) == 0 {
+            name = "(商品名未登録)"
+        }
         tokubaiItem.Name = name
 
         // Description
