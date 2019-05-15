@@ -54,7 +54,7 @@ func main() {
                     if len(items) == 0 {
                         bot.ReplyMessage(
                             event.ReplyToken,
-                            linebot.NewTextMessage(shop.Name + "のチラシは見つかりませんでした"),
+                            linebot.NewTextMessage(shop.Name + "のチラシ情報です https://tokubai.co.jp/" + shop.Id),
                         ).Do()
                         continue
                     }
