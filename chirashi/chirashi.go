@@ -6,6 +6,7 @@ import (
     "strings"
 
     "github.com/PuerkitoBio/goquery"
+    "github.com/wassan128/chirashizushi/util"
 )
 
 type Shop struct {
@@ -27,7 +28,7 @@ func Open(id string) Shop {
         log.Fatal(err)
     }
 
-    name := Strip(doc.Find("a.shop_name").Text())
+    name := util.Strip(doc.Find("a.shop_name").Text())
 
     var shop Shop
     shop.Chirashi = doc
@@ -49,11 +50,11 @@ func (shop Shop) GetTokubaiInfo() []Item {
         tokubaiItem.ImageUrl = src
 
         // Name
-        name := Strip(item.Find(".name").Text())
+        name := util.Strip(item.Find(".name").Text())
         tokubaiItem.Name = name
 
         // Description
-        desc := Strip(item.Find(".price_unit_and_production_area").Text())
+        desc := util.Strip(item.Find(".price_unit_and_production_area").Text())
         tokubaiItem.Description = desc
 
         // Price

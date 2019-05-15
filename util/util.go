@@ -1,4 +1,4 @@
-package chirashi
+package util
 
 import (
     "strings"
