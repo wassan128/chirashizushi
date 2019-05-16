@@ -18,6 +18,29 @@ func GenerateMessage(items []chirashi.Item) *linebot.CarouselContainer {
 
     bubbles := []*linebot.BubbleContainer{}
     for _, item := range items {
+        var components []linebot.FlexComponent
+        components = append(components,
+            &linebot.TextComponent{
+                Type: linebot.FlexComponentTypeText,
+                Size: linebot.FlexTextSizeTypeMd,
+                Weight: "bold",
+                Text: item.Name,
+            },
+            &linebot.TextComponent{
+                Type: linebot.FlexComponentTypeText,
+                Size: linebot.FlexTextSizeTypeSm,
+                Color: "#888888",
+                Text: item.Description,
+            },
+            &linebot.TextComponent{
+                Type: linebot.FlexComponentTypeText,
+                Size: linebot.FlexTextSizeType3xl,
+                Align: linebot.FlexComponentAlignTypeEnd,
+                Weight: "bold",
+                Color: "#ff3366",
+                Text: fmt.Sprintf("￥%d", item.Price),
+            },
+        )
         bubble := &linebot.BubbleContainer{
             Type: linebot.FlexContainerTypeBubble,
             Hero: &linebot.ImageComponent{
@@ -30,27 +53,7 @@ func GenerateMessage(items []chirashi.Item) *linebot.CarouselContainer {
             Body: &linebot.BoxComponent{
                 Type: linebot.FlexComponentTypeBox,
                 Layout: linebot.FlexBoxLayoutTypeVertical,
-                Contents: []linebot.FlexComponent{
-                    &linebot.TextComponent{
-                        Type: linebot.FlexComponentTypeText,
-                        Size: linebot.FlexTextSizeTypeXl,
-                        Weight: "bold",
-                        Text: item.Name,
-                    },
-                    &linebot.TextComponent{
-                        Type: linebot.FlexComponentTypeText,
-                        Color: "#888888",
-                        Text: item.Description,
-                    },
-                    &linebot.TextComponent{
-                        Type: linebot.FlexComponentTypeText,
-                        Size: linebot.FlexTextSizeType3xl,
-                        Align: linebot.FlexComponentAlignTypeEnd,
-                        Weight: "bold",
-                        Color: "#ff0000",
-                        Text: fmt.Sprintf("￥%d", item.Price),
-                    },
-                },
+                Contents: components,
             },
         }
         bubbles = append(bubbles, bubble)
