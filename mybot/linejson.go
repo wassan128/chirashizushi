@@ -1,13 +1,14 @@
-package chirashi
+package mybot
 
 import (
     "fmt"
     "sort"
 
     "github.com/line/line-bot-sdk-go/linebot"
+    "github.com/wassan128/chirashizushi/chirashi"
 )
 
-func GenerateMessage(items []Item) *linebot.CarouselContainer {
+func GenerateMessage(items []chirashi.Item) *linebot.CarouselContainer {
     sort.Slice(items, func(i, j int) bool {
         return items[i].Price < items[j].Price
     })

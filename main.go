@@ -8,6 +8,7 @@ import (
 
     "github.com/line/line-bot-sdk-go/linebot"
     "github.com/wassan128/chirashizushi/chirashi"
+    "github.com/wassan128/chirashizushi/mybot"
 )
 
 func main() {
@@ -59,7 +60,7 @@ func main() {
                         continue
                     }
 
-                    container := chirashi.GenerateMessage(items)
+                    container := mybot.GenerateMessage(items)
                     bot.ReplyMessage(
                         event.ReplyToken,
                         linebot.NewTextMessage(shop.Name + "のチラシ情報です https://tokubai.co.jp/" + shop.Id),
