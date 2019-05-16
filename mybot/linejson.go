@@ -34,7 +34,7 @@ func GenerateMessage(items []chirashi.Item) *linebot.CarouselContainer {
             },
             &linebot.TextComponent{
                 Type: linebot.FlexComponentTypeText,
-                Size: linebot.FlexTextSizeType3xl,
+                Size: linebot.FlexTextSizeTypeXxl,
                 Align: linebot.FlexComponentAlignTypeEnd,
                 Weight: "bold",
                 Color: "#ff3366",
