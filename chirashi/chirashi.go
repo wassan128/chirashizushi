@@ -12,7 +12,7 @@ import (
 type Shop struct {
     Id string
     Name string
-    Chirashi *goquery.Document
+    chirashi *goquery.Document
 }
 type Item struct {
     ImageUrl string
@@ -31,7 +31,7 @@ func Open(id string) Shop {
     name := util.Strip(doc.Find("a.shop_name").Text())
 
     var shop Shop
-    shop.Chirashi = doc
+    shop.chirashi = doc
     shop.Id = id
     shop.Name = name
 
@@ -39,7 +39,7 @@ func Open(id string) Shop {
 }
 
 func (shop Shop) GetTokubaiInfo() []Item {
-    items := shop.Chirashi.Find("a[id*=featured_product]")
+    items := shop.chirashi.Find("a[id*=featured_product]")
 
     var tokubaiItems []Item
     items.Each(func(_ int, item *goquery.Selection) {
