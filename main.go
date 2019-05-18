@@ -11,6 +11,41 @@ import (
     "github.com/wassan128/chirashizushi/mybot"
 )
 
+func chirashiHandler(shopId string, replyToken string, bot *linebot.Client) {
+    if _, err := strconv.Atoi(shopId); err != nil {
+        bot.ReplyMessage(
+            replyToken,
+            linebot.NewTextMessage("お店IDは数字で送信してください"),
+        ).Do()
+        return
+    }
+
+    shop := chirashi.Open(shopId)
+    if len(shop.Name) == 0 {
+        bot.ReplyMessage(
+            replyToken,
+            linebot.NewTextMessage("そのようなIDの店舗は見つかりませんでした"),
+        ).Do()
+        return
+    }
+
+    items := shop.GetTokubaiInfo()
+    if len(items) == 0 {
+        bot.ReplyMessage(
+            replyToken,
+            linebot.NewTextMessage(shop.Name + "のチラシ情報です https://tokubai.co.jp/" + shop.Id),
+        ).Do()
+        return
+    }
+
+    container := mybot.GenerateChirashiMessage(items)
+    bot.ReplyMessage(
+        replyToken,
+        linebot.NewTextMessage(shop.Name + "のチラシ情報です https://tokubai.co.jp/" + shop.Id),
+        linebot.NewFlexMessage("チラシ情報です", container),
+    ).Do()
+}
+
 func main() {
     bot, err := linebot.New(
         os.Getenv("CHANNEL_SECRET"),
@@ -35,37 +70,7 @@ func main() {
             if event.Type == linebot.EventTypeMessage {
                 switch message := event.Message.(type) {
                 case *linebot.TextMessage:
-                    if _, err := strconv.Atoi(message.Text); err != nil {
-                        bot.ReplyMessage(
-                            event.ReplyToken,
-                            linebot.NewTextMessage("お店IDは数字で送信してください"),
-                        ).Do()
-                    }
-
-                    shop := chirashi.Open(message.Text)
-                    if len(shop.Name) == 0 {
-                        bot.ReplyMessage(
-                            event.ReplyToken,
-                            linebot.NewTextMessage("そのようなIDの店舗は見つかりませんでした"),
-                        ).Do()
-                        continue
-                    }
-
-                    items := shop.GetTokubaiInfo()
-                    if len(items) == 0 {
-                        bot.ReplyMessage(
-                            event.ReplyToken,
-                            linebot.NewTextMessage(shop.Name + "のチラシ情報です https://tokubai.co.jp/" + shop.Id),
-                        ).Do()
-                        continue
-                    }
-
-                    container := mybot.GenerateChirashiMessage(items)
-                    bot.ReplyMessage(
-                        event.ReplyToken,
-                        linebot.NewTextMessage(shop.Name + "のチラシ情報です https://tokubai.co.jp/" + shop.Id),
-                        linebot.NewFlexMessage("チラシ情報です", container),
-                    ).Do()
+                    chirashiHandler(message.Text, event.ReplyToken, bot)
                 }
             }
         }
