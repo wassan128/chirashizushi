@@ -4,11 +4,13 @@ import (
     "log"
     "net/http"
     "os"
+    "strings"
     "strconv"
 
     "github.com/line/line-bot-sdk-go/linebot"
     "github.com/wassan128/chirashizushi/chirashi"
     "github.com/wassan128/chirashizushi/mybot"
+    "github.com/wassan128/chirashizushi/shopinfo"
 )
 
 func chirashiHandler(shopId string, replyToken string, bot *linebot.Client) {
@@ -46,6 +48,31 @@ func chirashiHandler(shopId string, replyToken string, bot *linebot.Client) {
     ).Do()
 }
 
+func shopinfoHandler(zipCode string, replyToken string, bot *linebot.Client) {
+    if code := strings.Split(zipCode, "-"); len(code[0]) != 3 || len(code[1]) != 4  {
+        bot.ReplyMessage(
+            replyToken,
+            linebot.NewTextMessage("郵便番号が不正です"),
+        ).Do()
+        return
+    }
+
+    shopinfos := shopinfo.Search(zipCode)
+    if len(shopinfos) == 0 {
+        bot.ReplyMessage(
+            replyToken,
+            linebot.NewTextMessage("ご指定の地域もしくは店舗が見つかりませんでした"),
+        ).Do()
+        return
+    }
+
+    container := mybot.GenerateShopInfoMessage(shopinfos)
+    bot.ReplyMessage(
+        replyToken,
+        linebot.NewTextMessage(zipCode + "の店舗リストです\n" + container),
+    ).Do()
+}
+
 func main() {
     bot, err := linebot.New(
         os.Getenv("CHANNEL_SECRET"),
@@ -70,7 +97,12 @@ func main() {
             if event.Type == linebot.EventTypeMessage {
                 switch message := event.Message.(type) {
                 case *linebot.TextMessage:
-                    chirashiHandler(message.Text, event.ReplyToken, bot)
+                    text := message.Text
+                    if strings.Contains(text, "-") {
+                        shopinfoHandler(text, event.ReplyToken, bot)
+                    } else {
+                        chirashiHandler(text, event.ReplyToken, bot)
+                    }
                 }
             }
         }
