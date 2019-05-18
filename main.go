@@ -60,7 +60,7 @@ func main() {
                         continue
                     }
 
-                    container := mybot.GenerateMessage(items)
+                    container := mybot.GenerateChirashiMessage(items)
                     bot.ReplyMessage(
                         event.ReplyToken,
                         linebot.NewTextMessage(shop.Name + "のチラシ情報です https://tokubai.co.jp/" + shop.Id),
