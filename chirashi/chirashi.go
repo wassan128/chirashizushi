@@ -64,10 +64,12 @@ func (shop Shop) GetTokubaiInfo() []Item {
         tokubaiItem.Description = desc
 
         // Price
-        price := item.Find(".number").Text()
-        tokubaiItem.Price, _ = strconv.Atoi(strings.Replace(price, ",", "", -1))
+        price, err := strconv.Atoi(strings.Replace(item.Find(".number").Text(), ",", "", -1))
+        tokubaiItem.Price = price
 
-        tokubaiItems = append(tokubaiItems, tokubaiItem)
+        if err == nil {
+            tokubaiItems = append(tokubaiItems, tokubaiItem)
+        }
     })
 
     return tokubaiItems
