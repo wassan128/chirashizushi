@@ -19,6 +19,7 @@ type Item struct {
     Name string
     Description string
     Price int
+    Label string
 }
 var shopId string
 
@@ -51,6 +52,10 @@ func (shop Shop) GetTokubaiInfo() []Item {
             src = "https://raw.githubusercontent.com/wassan128/chirashizushi/master/noimage.jpg"
         }
         tokubaiItem.ImageUrl = src
+
+        // Label
+        label := util.Strip(item.Find(".label_class").Text())
+        tokubaiItem.Label = label
 
         // Name
         name := util.Strip(item.Find(".name").Text())
