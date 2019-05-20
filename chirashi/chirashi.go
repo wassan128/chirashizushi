@@ -55,6 +55,9 @@ func (shop Shop) GetTokubaiInfo() []Item {
 
         // Label
         label := util.Strip(item.Find(".label_class").Text())
+        if len(label) == 0 {
+            label = "ラベル無"
+        }
         tokubaiItem.Label = label
 
         // Name
