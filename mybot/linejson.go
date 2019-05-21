@@ -41,6 +41,10 @@ func GenerateChirashiMessage(items []chirashi.Item) *linebot.CarouselContainer {
                 Color: "#ff3366",
                 Text: fmt.Sprintf("￥%d", item.Price),
             },
+            &linebot.SeparatorComponent{
+                Type: linebot.FlexComponentTypeSeparator,
+                Color: "#cccccc",
+            },
             &linebot.TextComponent{
                 Type: linebot.FlexComponentTypeText,
                 Size: linebot.FlexTextSizeTypeXs,
