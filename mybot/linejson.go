@@ -48,6 +48,8 @@ func GenerateChirashiMessage(items []chirashi.Item) *linebot.CarouselContainer {
             &linebot.TextComponent{
                 Type: linebot.FlexComponentTypeText,
                 Size: linebot.FlexTextSizeTypeXs,
+                Margin: linebot.FlexComponentMarginTypeMd,
+                Align: linebot.FlexComponentAlignTypeEnd,
                 Text: item.Label,
             },
         )
