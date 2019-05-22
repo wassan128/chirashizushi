@@ -43,13 +43,14 @@ func GenerateChirashiMessage(items []chirashi.Item) *linebot.CarouselContainer {
             },
             &linebot.SeparatorComponent{
                 Type: linebot.FlexComponentTypeSeparator,
-                Color: "#cccccc",
+                Color: "#eeeeee",
             },
             &linebot.TextComponent{
                 Type: linebot.FlexComponentTypeText,
                 Size: linebot.FlexTextSizeTypeXs,
                 Margin: linebot.FlexComponentMarginTypeMd,
                 Align: linebot.FlexComponentAlignTypeEnd,
+                Color: "#666666",
                 Text: item.Label,
             },
         )
