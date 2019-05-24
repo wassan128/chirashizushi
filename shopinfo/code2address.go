@@ -12,6 +12,10 @@ func Code2Address(zipCode string) string {
         log.Fatal(err)
     }
 
-    return doc.Find("#resultBox > div > table.list > tbody > tr:nth-child(2) > td:nth-child(5) > p.kanji").Text()
+    areaName := doc.Find("#resultBox > div > table.list > tbody > tr:nth-child(2) > td:nth-child(5) > p.kanji").Text()
+    if areaName == "" {
+        areaName = "404"
+    }
+    return areaName
 }
 

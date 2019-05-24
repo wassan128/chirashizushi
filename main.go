@@ -57,8 +57,8 @@ func shopinfoHandler(zipCode string, replyToken string, bot *linebot.Client) {
         return
     }
 
-    shopinfos := shopinfo.Search(zipCode)
-    if len(shopinfos) == 0 {
+    areaName, shopinfos := shopinfo.Search(zipCode)
+    if areaName == "404" || len(shopinfos) == 0 {
         bot.ReplyMessage(
             replyToken,
             linebot.NewTextMessage("ご指定の地域もしくは店舗が見つかりませんでした"),
@@ -69,7 +69,7 @@ func shopinfoHandler(zipCode string, replyToken string, bot *linebot.Client) {
     container := mybot.GenerateShopInfoMessage(shopinfos)
     bot.ReplyMessage(
         replyToken,
-        linebot.NewTextMessage(zipCode + "の店舗リストです\n" + container),
+        linebot.NewTextMessage(areaName + "(〒" + zipCode + ")の店舗リストです\n" + container),
     ).Do()
 }
 
