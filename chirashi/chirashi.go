@@ -69,6 +69,9 @@ func (shop Shop) GetTokubaiInfo() []Item {
 
         // Description
         desc := util.Strip(item.Find(".price_unit_and_production_area").Text())
+        if len(desc) == 0 {
+            desc = name
+        }
         tokubaiItem.Description = desc
 
         // Price
