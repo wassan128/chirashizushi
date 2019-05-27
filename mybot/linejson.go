@@ -41,19 +41,23 @@ func GenerateChirashiMessage(items []chirashi.Item) *linebot.CarouselContainer {
                 Color: "#ff3366",
                 Text: fmt.Sprintf("￥%d", item.Price),
             },
-            &linebot.SeparatorComponent{
-                Type: linebot.FlexComponentTypeSeparator,
-                Color: "#eeeeee",
-            },
-            &linebot.TextComponent{
-                Type: linebot.FlexComponentTypeText,
-                Size: linebot.FlexTextSizeTypeXs,
-                Margin: linebot.FlexComponentMarginTypeMd,
-                Align: linebot.FlexComponentAlignTypeEnd,
-                Color: "#666666",
-                Text: item.Label,
-            },
         )
+        if len(item.Label) > 0 {
+           components = append(components,
+               &linebot.SeparatorComponent{
+                    Type: linebot.FlexComponentTypeSeparator,
+                    Color: "#eeeeee",
+                },
+                &linebot.TextComponent{
+                    Type: linebot.FlexComponentTypeText,
+                    Size: linebot.FlexTextSizeTypeXs,
+                    Margin: linebot.FlexComponentMarginTypeMd,
+                    Align: linebot.FlexComponentAlignTypeEnd,
+                    Color: "#666666",
+                    Text: item.Label,
+                },
+            )
+        }
         bubble := &linebot.BubbleContainer{
             Type: linebot.FlexContainerTypeBubble,
             Hero: &linebot.ImageComponent{
