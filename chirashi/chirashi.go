@@ -55,14 +55,6 @@ func (shop Shop) GetTokubaiInfo() []Item {
 
         // Label
         label := util.Strip(item.Find(".label_class").Text())
-        if len(label) == 0 {
-            comment := util.Strip(item.Find(".comment_wrapper").Text())
-            if len(comment) == 0 {
-                label = name
-            } else {
-                label = comment
-            }
-        }
         tokubaiItem.Label = label
 
         // Name
@@ -75,7 +67,12 @@ func (shop Shop) GetTokubaiInfo() []Item {
         // Description
         desc := util.Strip(item.Find(".price_unit_and_production_area").Text())
         if len(desc) == 0 {
-            desc = name
+            comment := util.Strip(item.Find(".comment_wrapper").Text())
+            if len(comment) == 0 {
+                desc = name
+            } else {
+                desc = comment
+            }
         }
         tokubaiItem.Description = desc
 
