@@ -48,6 +48,9 @@ func chirashiHandler(shopId string, replyToken string, bot *linebot.Client) {
     ).Do()
 }
 
+func menuHandler(text string, replyToken string, bot *linebot.Client) {
+}
+
 func shopinfoHandler(zipCode string, replyToken string, bot *linebot.Client) {
     if code := strings.Split(zipCode, "-"); len(code[0]) != 3 || len(code[1]) != 4  {
         bot.ReplyMessage(
@@ -100,6 +103,8 @@ func main() {
                     text := message.Text
                     if strings.Contains(text, "-") {
                         shopinfoHandler(text, event.ReplyToken, bot)
+                    } else if strings.Contains(text, "メニュー") {
+                        menuHandler(text, event.ReplyToken, bot)
                     } else {
                         chirashiHandler(text, event.ReplyToken, bot)
                     }
