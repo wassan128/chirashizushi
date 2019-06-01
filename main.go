@@ -49,6 +49,15 @@ func chirashiHandler(shopId string, replyToken string, bot *linebot.Client) {
 }
 
 func menuHandler(text string, replyToken string, bot *linebot.Client) {
+   bot.ReplyMessage(
+       replyToken,
+       linebot.NewTextMessage("アクションを選択してください").WithQuickReplies(
+           linebot.NewQuickReplyItems(
+               linebot.NewQuickReplyButton("", linebot.NewMessageAction("お店", "1")),
+               linebot.NewQuickReplyButton("", linebot.NewLocationAction("現在地から探す")),
+           ),
+       ),
+   ).Do()
 }
 
 func shopinfoHandler(zipCode string, replyToken string, bot *linebot.Client) {
