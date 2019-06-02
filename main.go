@@ -112,7 +112,7 @@ func main() {
                     text := message.Text
                     if strings.Contains(text, "-") {
                         shopinfoHandler(text, event.ReplyToken, bot)
-                    } else if strings.Contains(text, "メニュー") {
+                    } else if strings.Contains(text, "チラシ") {
                         menuHandler(text, event.ReplyToken, bot)
                     } else {
                         chirashiHandler(text, event.ReplyToken, bot)
