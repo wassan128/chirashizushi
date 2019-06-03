@@ -50,7 +50,7 @@ func chirashiHandler(shopId string, replyToken string, bot *linebot.Client) {
 }
 
 func menuHandler(shopIds []string, replyToken string, bot *linebot.Client) {
-    shopButtons []*linebot.QuickReplyButton{
+    shopButtons := []*linebot.QuickReplyButton{
         linebot.NewQuickReplyButton("", linebot.NewLocationAction("現在地から探す")),
     }
     for _, shopId := range shopIds {
