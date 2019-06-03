@@ -11,6 +11,7 @@ import (
     "github.com/wassan128/chirashizushi/chirashi"
     "github.com/wassan128/chirashizushi/mybot"
     "github.com/wassan128/chirashizushi/shopinfo"
+    "github.com/wassan128/chirashizushi/util"
 )
 
 func chirashiHandler(shopId string, replyToken string, bot *linebot.Client) {
@@ -48,15 +49,22 @@ func chirashiHandler(shopId string, replyToken string, bot *linebot.Client) {
     ).Do()
 }
 
-func menuHandler(text string, replyToken string, bot *linebot.Client) {
-   bot.ReplyMessage(
-       replyToken,
-       linebot.NewTextMessage("アクションを選択してください").WithQuickReplies(
-           linebot.NewQuickReplyItems(
-               linebot.NewQuickReplyButton("", linebot.NewMessageAction("お店", "1")),
-               linebot.NewQuickReplyButton("", linebot.NewLocationAction("現在地から探す")),
-           ),
-       ),
+func menuHandler(shopIds []string, replyToken string, bot *linebot.Client) {
+    var shopButtons []*linebot.QuickReplyButton
+
+    for _, shopId := range shopIds {
+        shopButtons = append(shopButtons,
+            linebot.NewQuickReplyButton("", linebot.NewMessageAction(shopId, shopId)))
+    }
+    //linebot.NewQuickReplyButton("", linebot.NewLocationAction("現在地から探す"))
+
+    bot.ReplyMessage(
+        replyToken,
+        linebot.NewTextMessage("アクションを選択してください").WithQuickReplies(
+            &linebot.QuickReplyItems{
+                Items: shopButtons,
+            },
+        ),
    ).Do()
 }
 
@@ -110,10 +118,11 @@ func main() {
                 switch message := event.Message.(type) {
                 case *linebot.TextMessage:
                     text := message.Text
-                    if strings.Contains(text, "-") {
+                    if strings.Contains(text, "チラシ") {
+                        shopIds := util.ReadShopIds()
+                        menuHandler(shopIds, event.ReplyToken, bot)
+                    } else if strings.Contains(text, "-") {
                         shopinfoHandler(text, event.ReplyToken, bot)
-                    } else if strings.Contains(text, "チラシ") {
-                        menuHandler(text, event.ReplyToken, bot)
                     } else {
                         chirashiHandler(text, event.ReplyToken, bot)
                     }
