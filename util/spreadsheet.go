@@ -2,7 +2,6 @@ package util
 
 import (
     "encoding/json"
-    "fmt"
     "log"
     "net/http"
     "os"
@@ -24,7 +23,7 @@ func tokenFromEnv() (*oauth2.Token, error) {
     return tok, err
 }
 
-func ReadShopIds() []string {
+func ReadShopIds() map[string]string {
     config, err := google.ConfigFromJSON([]byte(
         os.Getenv("CREDENTIALS")),
         "https://www.googleapis.com/auth/spreadsheets.readonly",
@@ -42,15 +41,17 @@ func ReadShopIds() []string {
 
     // TODO
     spreadsheetId := os.Getenv("SHEET_ID_MASTER")
-    readRange := "A:A"
+    readRange := "A2:B"
     res, err := srv.Spreadsheets.Values.Get(spreadsheetId, readRange).Do()
     if err != nil {
         log.Fatal(err)
     }
 
-    ret := []string{}
+    ret := map[string]string{}
     for _, row := range res.Values {
-        ret = append(ret, fmt.Sprintf("%s", row[0]))
+        shopId, _ := row[0].(string)
+        shopName, _ := row[1].(string)
+        ret[shopId] = shopName
     }
 
     return ret
