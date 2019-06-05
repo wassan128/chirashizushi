@@ -118,7 +118,9 @@ func main() {
                 switch message := event.Message.(type) {
                 case *linebot.TextMessage:
                     text := message.Text
-                    if strings.Contains(text, "チラシ") {
+                    if strings.Contains(text, "チラシ") ||
+                        strings.Contains(text, "セット") ||
+                        strings.Contains(text, "リセット") {
                         shopIds := util.ReadShopIds()
                         menuHandler(shopIds, event.ReplyToken, bot)
                     } else if strings.Contains(text, "-") {
