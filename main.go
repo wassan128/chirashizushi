@@ -49,23 +49,47 @@ func chirashiHandler(shopId string, replyToken string, bot *linebot.Client) {
     ).Do()
 }
 
-func menuHandler(shopIds map[string]string, replyToken string, bot *linebot.Client) {
-    shopButtons := []*linebot.QuickReplyButton{}
-    for shopId, shopName := range shopIds {
-        shopButtons = append(shopButtons,
-            linebot.NewQuickReplyButton("", linebot.NewMessageAction(shopName, shopId)))
-    }
-    shopButtons = append(shopButtons,
-        linebot.NewQuickReplyButton("", linebot.NewLocationAction("現在地から探す")))
+func menuHandler(text string, replyToken string, bot *linebot.Client) {
+    shopIds := util.ReadShopIds()
 
-    bot.ReplyMessage(
-        replyToken,
-        linebot.NewTextMessage("アクションを選択してください").WithQuickReplies(
-            &linebot.QuickReplyItems{
-                Items: shopButtons,
-            },
-        ),
-   ).Do()
+    if cmd := strings.Split(text, " "); len(cmd) == 1 {
+        shopButtons := []*linebot.QuickReplyButton{}
+        for shopId, shopName := range shopIds {
+            shopButtons = append(shopButtons,
+                linebot.NewQuickReplyButton("", linebot.NewMessageAction(shopName, shopId)))
+        }
+        shopButtons = append(shopButtons,
+            linebot.NewQuickReplyButton("", linebot.NewLocationAction("現在地から探す")))
+
+        bot.ReplyMessage(
+            replyToken,
+            linebot.NewTextMessage("アクションを選択してください").WithQuickReplies(
+                &linebot.QuickReplyItems{
+                    Items: shopButtons,
+                },
+            ),
+        ).Do()
+    } else {
+        switch cmd[1] {
+        case "セット":
+            bot.ReplyMessage(
+                replyToken,
+                linebot.NewTextMessage("セットが指定されました"),
+            ).Do()
+
+        case "リセット":
+            bot.ReplyMessage(
+                replyToken,
+                linebot.NewTextMessage("リセットが指定されました"),
+            ).Do()
+
+        default:
+            bot.ReplyMessage(
+                replyToken,
+                linebot.NewTextMessage("不明なサブコマンドです"),
+            ).Do()
+        }
+    }
 }
 
 func shopinfoHandler(zipCode string, replyToken string, bot *linebot.Client) {
@@ -118,11 +142,8 @@ func main() {
                 switch message := event.Message.(type) {
                 case *linebot.TextMessage:
                     text := message.Text
-                    if strings.Contains(text, "チラシ") ||
-                        strings.Contains(text, "セット") ||
-                        strings.Contains(text, "リセット") {
-                        shopIds := util.ReadShopIds()
-                        menuHandler(shopIds, event.ReplyToken, bot)
+                    if strings.Contains(text, "チラシ") {
+                        menuHandler(text, event.ReplyToken, bot)
                     } else if strings.Contains(text, "-") {
                         shopinfoHandler(text, event.ReplyToken, bot)
                     } else {
