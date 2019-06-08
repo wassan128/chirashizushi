@@ -14,7 +14,7 @@ import (
     "github.com/wassan128/chirashizushi/util"
 )
 
-func chirashiHandler(shopId string, replyToken string, bot *linebot.Client) {
+func chirashiHandler(shopId, replyToken string, bot *linebot.Client) {
     if _, err := strconv.Atoi(shopId); err != nil {
         bot.ReplyMessage(
             replyToken,
@@ -49,7 +49,7 @@ func chirashiHandler(shopId string, replyToken string, bot *linebot.Client) {
     ).Do()
 }
 
-func menuHandler(text string, replyToken string, bot *linebot.Client) {
+func menuHandler(text, replyToken string, bot *linebot.Client) {
     shopIds := util.ReadShopIds()
 
     if cmd := strings.Split(text, " "); len(cmd) == 1 {
@@ -83,6 +83,8 @@ func menuHandler(text string, replyToken string, bot *linebot.Client) {
                 linebot.NewTextMessage("リセットが指定されました"),
             ).Do()
 
+        case "テスト":
+
         default:
             bot.ReplyMessage(
                 replyToken,
@@ -92,7 +94,7 @@ func menuHandler(text string, replyToken string, bot *linebot.Client) {
     }
 }
 
-func shopinfoHandler(zipCode string, replyToken string, bot *linebot.Client) {
+func shopinfoHandler(zipCode, replyToken string, bot *linebot.Client) {
     if code := strings.Split(zipCode, "-"); len(code[0]) != 3 || len(code[1]) != 4  {
         bot.ReplyMessage(
             replyToken,
