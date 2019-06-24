@@ -83,8 +83,6 @@ func menuHandler(text, replyToken string, bot *linebot.Client) {
                 linebot.NewTextMessage("リセットが指定されました"),
             ).Do()
 
-        case "テスト":
-
         default:
             bot.ReplyMessage(
                 replyToken,
