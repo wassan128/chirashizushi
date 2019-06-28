@@ -44,8 +44,8 @@ func chirashiHandler(shopId, replyToken string, bot *linebot.Client) {
     container := mybot.GenerateChirashiMessage(items)
     bot.ReplyMessage(
         replyToken,
-        linebot.NewTextMessage(shop.Name + "のチラシ情報です https://tokubai.co.jp/" + shop.Id),
         linebot.NewFlexMessage("チラシ情報です", container),
+        linebot.NewTextMessage(shop.Name + "のチラシ情報です https://tokubai.co.jp/" + shop.Id),
     ).Do()
 }
 
