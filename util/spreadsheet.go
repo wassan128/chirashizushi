@@ -48,7 +48,7 @@ func ReadShopIds() map[string]string {
     readRange := "A2:B"
     res, err := SheetsService.Spreadsheets.Values.Get(
         SheetsId,
-        readRange
+        readRange,
     ).Do()
 
     if err != nil {
