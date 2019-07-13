@@ -15,7 +15,7 @@ import (
 var SheetsService *sheets.Service
 var SheetId string
 
-func loadSheets() *sheetService.Spreadsheets {
+func loadSheets() {
     config, err := google.ConfigFromJSON([]byte(
         os.Getenv("CREDENTIALS")),
         "https://www.googleapis.com/auth/spreadsheets.readonly",
@@ -47,7 +47,7 @@ func tokenFromEnv() (*oauth2.Token, error) {
 func ReadShopIds() map[string]string {
     readRange := "A2:B"
     res, err := SheetsService.Spreadsheets.Values.Get(
-        SheetsId,
+        SheetId,
         readRange,
     ).Do()
 
