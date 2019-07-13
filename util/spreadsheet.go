@@ -17,7 +17,7 @@ type Sheet struct {
     Id string
 }
 
-func LoadSheets() *Sheet {
+func LoadSheet() *Sheet {
     var sheet Sheet
 
     config, err := google.ConfigFromJSON([]byte(

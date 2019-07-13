@@ -50,7 +50,7 @@ func chirashiHandler(shopId, replyToken string, bot *linebot.Client) {
 }
 
 func menuHandler(text, replyToken string, bot *linebot.Client) {
-    sheet := util.LoadSheets()
+    sheet := util.LoadSheet()
     shopIds := sheet.ReadShopIds()
 
     if cmd := strings.Split(text, " "); len(cmd) == 1 {
