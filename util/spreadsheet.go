@@ -12,10 +12,14 @@ import (
     "google.golang.org/api/sheets/v4"
 )
 
-var SheetsService *sheets.Service
-var SheetId string
+type Sheet struct {
+    Service *sheets.Service
+    Id string
+}
 
-func loadSheets() {
+func LoadSheets() *Sheet {
+    var sheet Sheet
+
     config, err := google.ConfigFromJSON([]byte(
         os.Getenv("CREDENTIALS")),
         "https://www.googleapis.com/auth/spreadsheets.readonly",
@@ -25,12 +29,14 @@ func loadSheets() {
     }
 
     client := getClient(config)
-    SheetsService, err := sheets.New(client)
+    sheet.Service, err = sheets.New(client)
     if err != nil {
         log.Fatal(err)
     }
 
-    SheetId = os.Getenv("SHEET_ID_MASTER")
+    sheet.Id = os.Getenv("SHEET_ID_MASTER")
+
+    return &sheet
 }
 
 func getClient(config *oauth2.Config) *http.Client {
@@ -44,10 +50,10 @@ func tokenFromEnv() (*oauth2.Token, error) {
     return tok, err
 }
 
-func ReadShopIds() map[string]string {
+func (sheet Sheet) ReadShopIds() map[string]string {
     readRange := "A2:B"
-    res, err := SheetsService.Spreadsheets.Values.Get(
-        SheetId,
+    res, err := sheet.Service.Spreadsheets.Values.Get(
+        sheet.Id,
         readRange,
     ).Do()
 
