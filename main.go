@@ -50,7 +50,8 @@ func chirashiHandler(shopId, replyToken string, bot *linebot.Client) {
 }
 
 func menuHandler(text, replyToken string, bot *linebot.Client) {
-    shopIds := util.ReadShopIds()
+    sheet := util.LoadSheets()
+    shopIds := sheet.ReadShopIds()
 
     if cmd := strings.Split(text, " "); len(cmd) == 1 {
         shopButtons := []*linebot.QuickReplyButton{}
