@@ -86,7 +86,7 @@ func (sheet Sheet) WriteShopId() {
 		Data:             data,
 	}
 
-	res, err := sheet.Service.Spreadsheets.Values.BatchUpdate(
+	_, err := sheet.Service.Spreadsheets.Values.BatchUpdate(
 		sheet.Id,
 		writeReq,
 	).Do()
