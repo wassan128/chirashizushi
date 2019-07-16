@@ -76,6 +76,9 @@ func (sheet Sheet) WriteShopId() {
         {
             Range: "A2:B",
             Values: [][]interface{}{
+                []interface{}{"shop1", 1},
+                []interface{}{"shop2", 2},
+                []interface{}{"shop3", 3},
             },
             MajorDimension: "COLUMNS",
         },
