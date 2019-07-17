@@ -6,6 +6,7 @@ import (
     "os"
     "strings"
     "strconv"
+    "regexp"
 
     "github.com/line/line-bot-sdk-go/linebot"
     "github.com/wassan128/chirashizushi/chirashi"
@@ -150,6 +151,15 @@ func main() {
                     } else {
                         chirashiHandler(text, event.ReplyToken, bot)
                     }
+
+                case *linebot.LocationMessage:
+                   address := message.Address
+
+                   re := regexp.MustCompile("\\d{3}-\\d{4}")
+                   matchedStrs := re.FindStringSubmatch(address)
+                   if len(matchedStrs) > 0 {
+                       shopinfoHandler(matchedStrs[0], event.ReplyToken, bot)
+                   }
                 }
             }
         }
