@@ -15,21 +15,23 @@ import (
     "github.com/wassan128/chirashizushi/util"
 )
 
-func chirashiHandler(shopId, replyToken string, bot *linebot.Client) {
+var Bot *linebot.Client
+
+func chirashiHandler(shopId, replyToken string) {
     if _, err := strconv.Atoi(shopId); err != nil {
-        newErrorMessage("お店IDは数字で送信してください", replyToken, bot)
+        newErrorMessage("お店IDは数字で送信してください", replyToken)
         return
     }
 
     shop := chirashi.Open(shopId)
     if len(shop.Name) == 0 {
-        newErrorMessage("そのようなIDの店舗は見つかりませんでした", replyToken, bot)
+        newErrorMessage("そのようなIDの店舗は見つかりませんでした", replyToken)
         return
     }
 
     items := shop.GetTokubaiInfo()
     if len(items) == 0 {
-        bot.ReplyMessage(
+        Bot.ReplyMessage(
             replyToken,
             linebot.NewTextMessage(shop.Name + "のチラシ情報です https://tokubai.co.jp/" + shop.Id),
         ).Do()
@@ -37,14 +39,14 @@ func chirashiHandler(shopId, replyToken string, bot *linebot.Client) {
     }
 
     container := mybot.GenerateChirashiMessage(items)
-    bot.ReplyMessage(
+    Bot.ReplyMessage(
         replyToken,
         linebot.NewFlexMessage("チラシ情報です", container),
         linebot.NewTextMessage(shop.Name + "のチラシ情報です https://tokubai.co.jp/" + shop.Id),
     ).Do()
 }
 
-func menuHandler(text, replyToken string, bot *linebot.Client) {
+func menuHandler(text, replyToken string) {
     sheet := util.LoadSheet()
     shopIds := sheet.ReadShopIds()
 
@@ -57,7 +59,7 @@ func menuHandler(text, replyToken string, bot *linebot.Client) {
         shopButtons = append(shopButtons,
             linebot.NewQuickReplyButton("", linebot.NewLocationAction("現在地から探す")))
 
-        bot.ReplyMessage(
+        Bot.ReplyMessage(
             replyToken,
             linebot.NewTextMessage("アクションを選択してください").WithQuickReplies(
                 &linebot.QuickReplyItems{
@@ -68,51 +70,51 @@ func menuHandler(text, replyToken string, bot *linebot.Client) {
     } else {
         switch cmd[1] {
         case "セット":
-            bot.ReplyMessage(
+            Bot.ReplyMessage(
                 replyToken,
                 linebot.NewTextMessage("セットが指定されました"),
             ).Do()
 
         case "リセット":
-            bot.ReplyMessage(
+            Bot.ReplyMessage(
                 replyToken,
                 linebot.NewTextMessage("リセットが指定されました"),
             ).Do()
 
         default:
-            newErrorMessage("不明なサブコマンドです", replyToken, bot)
+            newErrorMessage("不明なサブコマンドです", replyToken)
         }
     }
 }
 
-func shopinfoHandler(zipCode, replyToken string, bot *linebot.Client) {
+func shopinfoHandler(zipCode, replyToken string) {
     if code := strings.Split(zipCode, "-"); len(code[0]) != 3 || len(code[1]) != 4  {
-        newErrorMessage("郵便番号が不正です", replyToken, bot)
+        newErrorMessage("郵便番号が不正です", replyToken)
         return
     }
 
     areaName, shopinfos := shopinfo.Search(zipCode)
     if areaName == "404" || len(shopinfos) == 0 {
-        newErrorMessage("ご指定の地域もしくは店舗が見つかりませんでした", replyToken, bot)
+        newErrorMessage("ご指定の地域もしくは店舗が見つかりませんでした", replyToken)
         return
     }
 
     container := mybot.GenerateShopInfoMessage(shopinfos)
-    bot.ReplyMessage(
+    Bot.ReplyMessage(
         replyToken,
         linebot.NewTextMessage(areaName + "(〒" + zipCode + ")の店舗リストです\n" + container),
     ).Do()
 }
 
-func newErrorMessage(errorMsg, replyToken string, bot *linebot.Client) {
-    bot.ReplyMessage(
+func newErrorMessage(errorMsg, replyToken string) {
+    Bot.ReplyMessage(
         replyToken,
         linebot.NewTextMessage(errorMsg),
     ).Do()
 }
 
 func main() {
-    bot, err := linebot.New(
+    Bot, err := linebot.New(
         os.Getenv("CHANNEL_SECRET"),
         os.Getenv("CHANNEL_ACCESS_TOKEN"),
     )
@@ -122,7 +124,7 @@ func main() {
     }
 
     http.HandleFunc("/callback", func(w http.ResponseWriter, req *http.Request) {
-        events, err := bot.ParseRequest(req)
+        events, err := Bot.ParseRequest(req)
         if err != nil {
             if err == linebot.ErrInvalidSignature {
                 w.WriteHeader(400)
@@ -137,11 +139,11 @@ func main() {
                 case *linebot.TextMessage:
                     text := message.Text
                     if strings.Contains(text, "チラシ") {
-                        menuHandler(text, event.ReplyToken, bot)
+                        menuHandler(text, event.ReplyToken)
                     } else if strings.Contains(text, "-") {
-                        shopinfoHandler(text, event.ReplyToken, bot)
+                        shopinfoHandler(text, event.ReplyToken)
                     } else {
-                        chirashiHandler(text, event.ReplyToken, bot)
+                        chirashiHandler(text, event.ReplyToken)
                     }
 
                 case *linebot.LocationMessage:
@@ -150,7 +152,7 @@ func main() {
                    re := regexp.MustCompile("\\d{3}-\\d{4}")
                    matchedStrs := re.FindStringSubmatch(address)
                    if len(matchedStrs) > 0 {
-                       shopinfoHandler(matchedStrs[0], event.ReplyToken, bot)
+                       shopinfoHandler(matchedStrs[0], event.ReplyToken)
                    }
                 }
             }
