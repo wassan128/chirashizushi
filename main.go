@@ -50,9 +50,9 @@ func menuHandler(text, replyToken string) {
     sheet := util.LoadSheet()
     shopIds := sheet.ReadShopIds()
 
-    shopButtons := append([]*linebot.QuickReplyButton{},
-        linebot.NewQuickReplyButton("", linebot.NewLocationAction("現在地から探す")))
-
+    shopButtons := []*linebot.QuickReplyButton{
+        linebot.NewQuickReplyButton("", linebot.NewLocationAction("現在地から探す")),
+    }
     for shopId, shopName := range shopIds {
         shopButtons = append(shopButtons,
             linebot.NewQuickReplyButton("", linebot.NewMessageAction(shopName, shopId)))
