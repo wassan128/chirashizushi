@@ -17,19 +17,13 @@ import (
 
 func chirashiHandler(shopId, replyToken string, bot *linebot.Client) {
     if _, err := strconv.Atoi(shopId); err != nil {
-        bot.ReplyMessage(
-            replyToken,
-            linebot.NewTextMessage("お店IDは数字で送信してください"),
-        ).Do()
+        newErrorMessage("お店IDは数字で送信してください", replyToken, bot)
         return
     }
 
     shop := chirashi.Open(shopId)
     if len(shop.Name) == 0 {
-        bot.ReplyMessage(
-            replyToken,
-            linebot.NewTextMessage("そのようなIDの店舗は見つかりませんでした"),
-        ).Do()
+        newErrorMessage("そのようなIDの店舗は見つかりませんでした", replyToken, bot)
         return
     }
 
@@ -86,29 +80,20 @@ func menuHandler(text, replyToken string, bot *linebot.Client) {
             ).Do()
 
         default:
-            bot.ReplyMessage(
-                replyToken,
-                linebot.NewTextMessage("不明なサブコマンドです"),
-            ).Do()
+            newErrorMessage("不明なサブコマンドです", replyToken, bot)
         }
     }
 }
 
 func shopinfoHandler(zipCode, replyToken string, bot *linebot.Client) {
     if code := strings.Split(zipCode, "-"); len(code[0]) != 3 || len(code[1]) != 4  {
-        bot.ReplyMessage(
-            replyToken,
-            linebot.NewTextMessage("郵便番号が不正です"),
-        ).Do()
+        newErrorMessage("郵便番号が不正です", replyToken, bot)
         return
     }
 
     areaName, shopinfos := shopinfo.Search(zipCode)
     if areaName == "404" || len(shopinfos) == 0 {
-        bot.ReplyMessage(
-            replyToken,
-            linebot.NewTextMessage("ご指定の地域もしくは店舗が見つかりませんでした"),
-        ).Do()
+        newErrorMessage("ご指定の地域もしくは店舗が見つかりませんでした", replyToken, bot)
         return
     }
 
@@ -119,7 +104,7 @@ func shopinfoHandler(zipCode, replyToken string, bot *linebot.Client) {
     ).Do()
 }
 
-func errorHandler(errorMsg, replyToken string, bot *linebot.Client) {
+func newErrorMessage(errorMsg, replyToken string, bot *linebot.Client) {
     bot.ReplyMessage(
         replyToken,
         linebot.NewTextMessage(errorMsg),
