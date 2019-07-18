@@ -119,6 +119,13 @@ func shopinfoHandler(zipCode, replyToken string, bot *linebot.Client) {
     ).Do()
 }
 
+func errorHandler(errorMsg, replyToken string, bot *linebot.Client) {
+    bot.ReplyMessage(
+        replyToken,
+        linebot.NewTextMessage(errorMsg),
+    ).Do()
+}
+
 func main() {
     bot, err := linebot.New(
         os.Getenv("CHANNEL_SECRET"),
