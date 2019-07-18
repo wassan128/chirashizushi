@@ -50,41 +50,22 @@ func menuHandler(text, replyToken string) {
     sheet := util.LoadSheet()
     shopIds := sheet.ReadShopIds()
 
-    if cmd := strings.Split(text, " "); len(cmd) == 1 {
-        shopButtons := []*linebot.QuickReplyButton{}
-        for shopId, shopName := range shopIds {
-            shopButtons = append(shopButtons,
-                linebot.NewQuickReplyButton("", linebot.NewMessageAction(shopName, shopId)))
-        }
+    shopButtons := append([]*linebot.QuickReplyButton{},
+        linebot.NewQuickReplyButton("", linebot.NewLocationAction("現在地から探す")))
+
+    for shopId, shopName := range shopIds {
         shopButtons = append(shopButtons,
-            linebot.NewQuickReplyButton("", linebot.NewLocationAction("現在地から探す")))
-
-        Bot.ReplyMessage(
-            replyToken,
-            linebot.NewTextMessage("アクションを選択してください").WithQuickReplies(
-                &linebot.QuickReplyItems{
-                    Items: shopButtons,
-                },
-            ),
-        ).Do()
-    } else {
-        switch cmd[1] {
-        case "セット":
-            Bot.ReplyMessage(
-                replyToken,
-                linebot.NewTextMessage("セットが指定されました"),
-            ).Do()
-
-        case "リセット":
-            Bot.ReplyMessage(
-                replyToken,
-                linebot.NewTextMessage("リセットが指定されました"),
-            ).Do()
-
-        default:
-            newErrorMessage("不明なサブコマンドです", replyToken)
-        }
+            linebot.NewQuickReplyButton("", linebot.NewMessageAction(shopName, shopId)))
     }
+
+    Bot.ReplyMessage(
+        replyToken,
+        linebot.NewTextMessage("アクションを選択してください").WithQuickReplies(
+            &linebot.QuickReplyItems{
+                Items: shopButtons,
+            },
+        ),
+    ).Do()
 }
 
 func shopinfoHandler(zipCode, replyToken string) {
