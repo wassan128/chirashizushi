@@ -95,7 +95,8 @@ func newErrorMessage(errorMsg, replyToken string) {
 }
 
 func main() {
-    Bot, err := linebot.New(
+    var err error
+    Bot, err = linebot.New(
         os.Getenv("CHANNEL_SECRET"),
         os.Getenv("CHANNEL_ACCESS_TOKEN"),
     )
