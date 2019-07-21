@@ -7,9 +7,13 @@ import (
     "github.com/wassan128/chirashizushi/util"
 )
 
-type ShopInfo struct {
+type ShopAttr struct {
     Name string
     Id string
+}
+type ShopInfo struct {
+    Category string
+    Shops []ShopAttr
 }
 
 func Search(zipCode string) (string, []ShopInfo) {
@@ -18,17 +22,31 @@ func Search(zipCode string) (string, []ShopInfo) {
         log.Fatal(err)
     }
 
-    shops := doc.Find("label.shop")
-    areaName := Code2Address(zipCode)
-
     var shopInfos []ShopInfo
-    shops.Each(func(_ int, shop *goquery.Selection) {
+    categories := doc.Find(".nearest_shops_wrapper > div").
+                        Not(".subscribe_recommended_shops, .title, .change_zip_code")
+    categories.Each(func(_ int, category *goquery.Selection) {
         var shopInfo ShopInfo
-        shopInfo.Name = util.Strip(shop.Find(".shop_name").Text())
-        extracted, _ := shop.Attr("id")
-        shopInfo.Id = util.Strip(extracted[5:])
+
+        categoryName := category.Find("h2.business_category_name").Text()
+        shopInfo.Category = categoryName
+
+        var shopAttrs []ShopAttr
+        shops := doc.Find("label.shop")
+        areaName := Code2Address(zipCode)
+        shops.Each(func(_ int, shop *goquery.Selection) {
+            var shopAttr ShopAttr
+            shopAttr.Name = util.Strip(shop.Find(".shop_name").Text())
+            extracted, _ := shop.Attr("id")
+            shopAttr.Id = util.Strip(extracted[5:])
+            shopAttrs = append(shopAttrs, shopAttr)
+        })
+        shopInfo.Shops = shopAttrs
+
         shopInfos = append(shopInfos, shopInfo)
     })
+
+
     return areaName, shopInfos
 }
 
