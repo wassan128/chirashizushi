@@ -86,7 +86,10 @@ func GenerateChirashiMessage(items []chirashi.Item) *linebot.CarouselContainer {
 func GenerateShopInfoMessage(shopinfos []shopinfo.ShopInfo) string {
     shopinfoMsg := ""
     for _, shopinfo := range shopinfos {
-        shopinfoMsg += fmt.Sprintf("【%s】%s\n", shopinfo.Id, shopinfo.Name)
+        shopinfoMsg += fmt.Sprintf("【%s】\n", shopinfo.Category)
+        for _, shop := range shopinfo.Shops {
+            shopinfoMsg += fmt.Sprintf("%s: %s\n", shop.Id, shop.Name)
+        }
     }
     return shopinfoMsg
 }

@@ -22,6 +22,8 @@ func Search(zipCode string) (string, []ShopInfo) {
         log.Fatal(err)
     }
 
+    var areaName string
+
     var shopInfos []ShopInfo
     categories := doc.Find(".nearest_shops_wrapper > div").
                         Not(".subscribe_recommended_shops, .title, .change_zip_code")
@@ -33,7 +35,7 @@ func Search(zipCode string) (string, []ShopInfo) {
 
         var shopAttrs []ShopAttr
         shops := doc.Find("label.shop")
-        areaName := Code2Address(zipCode)
+        areaName = Code2Address(zipCode)
         shops.Each(func(_ int, shop *goquery.Selection) {
             var shopAttr ShopAttr
             shopAttr.Name = util.Strip(shop.Find(".shop_name").Text())
@@ -45,7 +47,6 @@ func Search(zipCode string) (string, []ShopInfo) {
 
         shopInfos = append(shopInfos, shopInfo)
     })
-
 
     return areaName, shopInfos
 }
