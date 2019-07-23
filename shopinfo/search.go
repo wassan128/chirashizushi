@@ -34,7 +34,7 @@ func Search(zipCode string) (string, []ShopInfo) {
         shopInfo.Category = categoryName
 
         var shopAttrs []ShopAttr
-        shops := doc.Find("label.shop")
+        shops := category.Find("label.shop")
         shops.Each(func(_ int, shop *goquery.Selection) {
             var shopAttr ShopAttr
             shopAttr.Name = util.Strip(shop.Find(".shop_name").Text())
